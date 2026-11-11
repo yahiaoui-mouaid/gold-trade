@@ -1,0 +1,20 @@
+{% extends "base.html" %}{% load i18n gv %}
+{% block content %}
+<h1>{% translate "Clients and suppliers" %}</h1>
+<form class="filters">
+  <label>{% translate "Search by name or phone" %}<input type="search" name="q" value="{{ q }}"></label>
+  <label>{% translate "Type" %}<select name="kind"><option value="">{% translate "All" %}</option>
+    <option value="client"{% if kind == 'client' %} selected{% endif %}>{% translate "Client" %}</option>
+    <option value="supplier"{% if kind == 'supplier' %} selected{% endif %}>{% translate "Supplier" %}</option>
+    <option value="workshop"{% if kind == 'workshop' %} selected{% endif %}>{% translate "Workshop" %}</option></select></label>
+  <button class="btn quiet">{% translate "Filter" %}</button>
+  <a class="btn" href="{% url 'party_new' %}">{% translate "Add client or supplier" %}</a>
+</form>
+<div class="table-wrap"><table>
+  <tr><th>{% translate "Name" %}</th><th>{% translate "Phone" %}</th><th>{% translate "Type" %}</th></tr>
+  {% for p in parties %}
+  <tr><td><a href="{% url 'party_folder' p.pk %}">{{ p.name }}</a>{% if p.archived %} <span class="muted">({% translate "Archived" %})</span>{% endif %}</td><td><span class="num">{{ p.phone|default:"" }}</span></td><td>{{ p.kind|label }}</td></tr>
+  {% empty %}<tr><td colspan="3" class="empty">{% translate "Nobody found. Add a client or supplier to begin." %}</td></tr>
+  {% endfor %}
+</table></div>
+{% endblock %}

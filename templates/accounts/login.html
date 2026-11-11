@@ -1,0 +1,11 @@
+{% extends "auth_base.html" %}{% load i18n %}
+{% block content %}
+<h1>{% translate "Log in" %}</h1>
+{% include "_error.html" %}
+<form method="post" class="stack">{% csrf_token %}
+  <label>{% translate "Username" %}<input name="username" required autofocus autocomplete="off" class="ltr"></label>
+  <label>{% translate "Password" %}<input type="password" name="password" required autocomplete="off"></label>
+  <button class="btn">{% translate "Log in" %}</button>
+</form>
+<p class="muted"><br><a href="{% url 'forgot' %}">{% translate "Admin: forgot your password?" %}</a></p>
+{% endblock %}

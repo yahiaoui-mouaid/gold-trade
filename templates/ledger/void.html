@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% load i18n %}
+{% block content %}
+<h1>{% translate "Void this operation" %}: <span class="num">{{ t.number }}</span></h1>
+<p>{% translate "The operation stays in the history. A mirror operation with opposite amounts cancels it." %}</p>
+{% include "_error.html" %}
+<form method="post" class="stack narrow">{% csrf_token %}
+  <label>{% translate "Reason" %}<textarea name="reason" required rows="3"></textarea></label>
+  <button class="btn danger">{% translate "Void this operation" %}</button>
+</form>
+{% endblock %}

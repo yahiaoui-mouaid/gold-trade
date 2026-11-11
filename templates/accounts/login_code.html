@@ -1,0 +1,10 @@
+{% extends "auth_base.html" %}{% load i18n %}
+{% block content %}
+<h1>{% translate "Enter your code" %}</h1>
+{% include "_error.html" %}
+<form method="post" class="stack">{% csrf_token %}
+  <label>{% translate "6-digit code from your phone" %}<input name="code" required autofocus autocomplete="off" class="ltr"></label>
+  <button class="btn">{% translate "Log in" %}</button>
+</form>
+<p class="muted"><br>{% translate "Lost your phone? Enter one of your backup codes in the same box." %}</p>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}{% load i18n %}
+{% block content %}
+<h1>{% translate "Debt payment" %}</h1>
+{% include "_error.html" %}
+{% if over_warning %}<p class="warn">{% translate "This payment is larger than the debt, so the balance will change direction. Tick the box below to post it anyway." %}</p>{% endif %}
+<form method="post" id="payment-form" class="stack">{% csrf_token %}
+  <input type="hidden" name="form_token" value="{{ form_token }}">
+  <input type="hidden" name="operation_at_default" value="{{ operation_at_default }}">
+  {% include "parties/_picker.html" %}
+  <div class="fields">
+    <fieldset><legend>{% translate "Who pays?" %}</legend>
+      <label><input type="radio" name="direction" value="in"{% if post.direction != 'out' %} checked{% endif %}>{% translate "They pay you" %}</label>
+      <label><input type="radio" name="direction" value="out"{% if post.direction == 'out' %} checked{% endif %}>{% translate "You pay them" %}</label>
+    </fieldset>
+    <fieldset><legend>{% translate "Paid in" %}</legend>
+      <label><input type="radio" name="asset" value="money"{% if post.asset != 'gold' %} checked{% endif %}>{% translate "Money" %}</label>
+      <label><input type="radio" name="asset" value="gold"{% if post.asset == 'gold' %} checked{% endif %}>{% translate "Gold" %}</label>
+    </fieldset>
+    <label>{% translate "Date and time" %}<input type="datetime-local" name="operation_at" value="{{ operation_at }}" class="ltr"></label>
+  </div>
+  <div class="fields narrow" data-when="money">
+    <label>{% translate "Amount (DA)" %}<input name="amount" inputmode="decimal" class="ltr" autocomplete="off" value="{{ post.amount|default:'' }}"></label>
+  </div>
+  <div class="fields" data-when="gold">
+    <label>{% translate "Origin" %}<select name="origin">{% for o in origins %}<option value="{{ o.pk }}"{% if post.origin == o.pk|stringformat:"s" %} selected{% endif %}>{{ o.name }}</option>{% endfor %}</select></label>
+    <label>{% translate "Purity" %}<select name="purity">{% for p in purities %}<option value="{{ p.pk }}"{% if post.purity == p.pk|stringformat:"s" %} selected{% endif %}>{{ p.label }}</option>{% endfor %}</select></label>
+    <label>{% translate "Weight (g)" %}<input name="grams" inputmode="decimal" class="ltr" autocomplete="off" value="{{ post.grams|default:'' }}"></label>
+  </div>
+  <div class="fields" data-when="gold-in">
+    <label>{% translate "Tested ‰ (optional)" %}<input name="fineness" inputmode="decimal" class="ltr" autocomplete="off" value="{{ post.fineness|default:'' }}"></label>
+  </div>
+  <div class="fields" data-when="gold-out">
+    <label>{% translate "Category" %}<select name="category">{% for c in categories %}<option value="{{ c.pk }}"{% if post.category == c.pk|stringformat:"s" %} selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></label>
+    <label>{% translate "Pieces" %}<input name="pieces" inputmode="numeric" class="ltr" autocomplete="off" value="{{ post.pieces|default:'' }}"></label>
+  </div>
+  <label>{% translate "Note" %}<input name="note" value="{{ post.note|default:'' }}" autocomplete="off"></label>
+  {% if over_warning %}<label><input type="checkbox" name="confirm_over" value="1" required>{% translate "Post it even though it is larger than the debt" %}</label>{% endif %}
+  <button class="btn">{% translate "Post payment" %}</button>
+</form>
+{% endblock %}

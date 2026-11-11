@@ -1,0 +1,5 @@
+{% extends "auth_base.html" %}{% load i18n %}
+{% block content %}
+<h1>{% translate "You do not have access to this page" %}</h1>
+<p><a class="btn" href="{% url 'home' %}">{% translate "Back to start" %}</a></p>
+{% endblock %}

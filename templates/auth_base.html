@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% load i18n %}
+{% block page %}
+<main class="auth">
+  <div class="auth-panel{% block wide %}{% endblock %}">
+    <div class="auth-word">Gold Volt</div>
+    {% block content %}{% endblock %}
+    <form method="post" action="{% url 'set_language' %}" class="lang-switch no-print">{% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.path }}">
+      <p class="muted"><button name="language" value="ar">العربية</button><button name="language" value="fr">Français</button></p>
+    </form>
+  </div>
+</main>
+{% endblock %}

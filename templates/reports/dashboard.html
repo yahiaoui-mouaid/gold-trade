@@ -1,0 +1,32 @@
+{% extends "base.html" %}{% load i18n gv %}
+{% block content %}
+<h1>{% translate "Dashboard" %}</h1>
+{% if clock != 'ok' %}
+<form method="post" action="{% url 'clock_confirm' %}" class="warn section actions">{% csrf_token %}
+  <span>{% translate "The computer's time looks wrong compared with the last operation. Check it, then confirm." %}</span>
+  <button class="btn">{% translate "The time is correct" %}</button>
+</form>
+{% endif %}
+<dl class="figures">
+  <div class="figure"><dt>{% translate "Cash in the drawer" %}</dt><dd><span class="num">{{ drawer|dinars }} DA</span></dd></div>
+  <div class="figure"><dt>{% translate "Owed to you in money" %}</dt><dd><span class="num">{{ totals.money.to_me|dinars }} DA</span></dd></div>
+  <div class="figure"><dt>{% translate "You owe in money" %}</dt><dd><span class="num">{{ totals.money.by_me|dinars }} DA</span></dd></div>
+  {% for origin, v in totals.gold.items %}
+  <div class="figure"><dt>{% translate "Gold" %}: {{ origin }}</dt><dd class="gold">{% if v.to_me %}<span class="num">+{{ v.to_me|grams }} g</span>{% endif %}{% if v.to_me and v.by_me %} / {% endif %}{% if v.by_me %}<span class="num">−{{ v.by_me|grams }} g</span>{% endif %}</dd></div>
+  {% endfor %}
+</dl>
+<div class="section">
+  <h2>{% translate "Debts with no recent payment" %}</h2>
+  <div class="table-wrap"><table>
+    {% for a in alerts.debts %}<tr><td><a href="{% url 'party_folder' a.party.pk %}">{{ a.party.name }}</a></td><td class="end"><span class="num">{{ a.days }}</span> {% translate "days" %}</td></tr>
+    {% empty %}<tr><td class="empty">{% translate "No overdue debts." %}</td></tr>{% endfor %}
+  </table></div>
+</div>
+<div class="section">
+  <h2>{% translate "No recent operations" %}</h2>
+  <div class="table-wrap"><table>
+    {% for a in alerts.inactive %}<tr><td><a href="{% url 'party_folder' a.party.pk %}">{{ a.party.name }}</a></td><td class="end"><span class="num">{{ a.days }}</span> {% translate "days" %}</td></tr>
+    {% empty %}<tr><td class="empty">{% translate "Everyone has been active recently." %}</td></tr>{% endfor %}
+  </table></div>
+</div>
+{% endblock %}

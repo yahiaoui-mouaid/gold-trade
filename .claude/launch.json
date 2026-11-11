@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "gold-volt",
+      "runtimeExecutable": "G:\\gold_trade\\.venv\\Scripts\\python.exe",
+      "runtimeArgs": ["service/run.py"],
+      "port": 8765,
+      "url": "http://127.0.0.1:8765"
+    }
+  ]
+}

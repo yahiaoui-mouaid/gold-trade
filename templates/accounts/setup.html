@@ -1,0 +1,12 @@
+{% extends "auth_base.html" %}{% load i18n %}
+{% block content %}
+<h1>{% translate "Create the admin account" %}</h1>
+{% include "_error.html" %}
+<form method="post" class="stack">{% csrf_token %}
+  <label>{% translate "Username" %}<input name="username" required autofocus autocomplete="off" class="ltr"></label>
+  <label>{% translate "Your name" %}<input name="display_name" required autocomplete="off"></label>
+  <label>{% translate "Password (at least 12 characters)" %}<input type="password" name="password" required minlength="12" autocomplete="new-password"></label>
+  <label>{% translate "Repeat the password" %}<input type="password" name="password2" required minlength="12" autocomplete="new-password"></label>
+  <button class="btn">{% translate "Continue" %}</button>
+</form>
+{% endblock %}

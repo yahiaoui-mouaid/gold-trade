@@ -1,0 +1,7 @@
+{% load i18n %}<div class="row" data-row>
+  <label>{% translate "Origin" %}<select name="in_origin">{% for o in origins %}<option value="{{ o.pk }}"{% if row.origin == o.pk|stringformat:"s" %} selected{% endif %}>{{ o.name }}</option>{% endfor %}</select></label>
+  <label>{% translate "Purity" %}<select name="in_purity">{% for p in purities %}<option value="{{ p.pk }}"{% if row.purity == p.pk|stringformat:"s" %} selected{% endif %}>{{ p.label }}</option>{% endfor %}</select></label>
+  <label>{% translate "Weight (g)" %}<input name="in_grams" inputmode="decimal" class="ltr" autocomplete="off" value="{{ row.grams|default:'' }}"></label>
+  <label>{% translate "Tested ‰ (optional)" %}<input name="in_fineness" inputmode="decimal" class="ltr" autocomplete="off" value="{{ row.fineness|default:'' }}"></label>
+  <button type="button" class="row-remove" data-action="remove-row">{% translate "Remove" %}</button>
+</div>

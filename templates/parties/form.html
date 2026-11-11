@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% load i18n gv %}
+{% block content %}
+<h1>{% if party %}{{ party.name }}{% else %}{% translate "Add client or supplier" %}{% endif %}</h1>
+{% include "_error.html" %}
+<form method="post" class="stack narrow">{% csrf_token %}
+  <label>{% translate "Type" %}<select name="kind">{% for value, _l in kinds %}<option value="{{ value }}"{% if party.kind == value %} selected{% endif %}>{{ value|label }}</option>{% endfor %}</select></label>
+  <label>{% translate "Name" %}<input name="name" required value="{{ party.name|default:'' }}"></label>
+  <label>{% translate "Phone" %}<input name="phone" inputmode="tel" class="ltr" value="{{ party.phone|default:'' }}"></label>
+  <label>{% translate "ID number" %}<input name="id_number" class="ltr" value="{{ party.id_number|default:'' }}"></label>
+  <label>{% translate "Address" %}<input name="address" value="{{ party.address|default:'' }}"></label>
+  <label>{% translate "Alert after how many days (empty for 15)" %}<input name="alert_days" inputmode="numeric" class="ltr" value="{{ party.alert_days|default:'' }}"></label>
+  <label>{% translate "Notes" %}<textarea name="notes" rows="3">{{ party.notes|default:'' }}</textarea></label>
+  <button class="btn">{% translate "Save" %}</button>
+</form>
+{% endblock %}

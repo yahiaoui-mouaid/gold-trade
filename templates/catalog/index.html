@@ -1,0 +1,55 @@
+{% extends "base.html" %}{% load i18n gv %}
+{% block content %}
+<h1>{% translate "Categories and origins" %}</h1>
+{% include "_error.html" %}
+<div class="section">
+  <h2>{% translate "Categories" %}</h2>
+  <div class="table-wrap"><table>
+    <tr><th>{% translate "Arabic name" %}</th><th>{% translate "French name" %}</th><th>{% translate "Status" %}</th><th></th></tr>
+    {% for c in categories %}
+    <tr><td>{{ c.name_ar }}</td><td>{{ c.name_fr }}</td><td>{% if c.disabled %}{% translate "Disabled" %}{% else %}{% translate "Active" %}{% endif %}</td>
+      <td><div class="actions">
+        <form method="post" action="{% url 'catalog_toggle' 'category' c.pk %}">{% csrf_token %}<button class="link">{% if c.disabled %}{% translate "Enable" %}{% else %}{% translate "Disable" %}{% endif %}</button></form>
+        <form method="post" action="{% url 'category_delete' c.pk %}">{% csrf_token %}<button class="link">{% translate "Delete" %}</button></form>
+      </div></td></tr>
+    {% empty %}<tr><td colspan="4" class="empty">{% translate "No categories yet. Add the first one below." %}</td></tr>
+    {% endfor %}
+  </table></div>
+  <form method="post" class="filters">{% csrf_token %}<input type="hidden" name="type" value="category">
+    <label>{% translate "Arabic name" %}<input name="name_ar" required></label>
+    <label>{% translate "French name" %}<input name="name_fr" required></label>
+    <button class="btn">{% translate "Add category" %}</button>
+  </form>
+</div>
+<div class="section">
+  <h2>{% translate "Gold origins" %}</h2>
+  <div class="table-wrap"><table>
+    <tr><th>{% translate "Arabic name" %}</th><th>{% translate "French name" %}</th><th>{% translate "Status" %}</th><th></th></tr>
+    {% for c in origins %}
+    <tr><td>{{ c.name_ar }}</td><td>{{ c.name_fr }}</td><td>{% if c.disabled %}{% translate "Disabled" %}{% else %}{% translate "Active" %}{% endif %}</td>
+      <td><form method="post" action="{% url 'catalog_toggle' 'origin' c.pk %}">{% csrf_token %}<button class="link">{% if c.disabled %}{% translate "Enable" %}{% else %}{% translate "Disable" %}{% endif %}</button></form></td></tr>
+    {% empty %}<tr><td colspan="4" class="empty">{% translate "No origins yet. Add the first one below." %}</td></tr>
+    {% endfor %}
+  </table></div>
+  <form method="post" class="filters">{% csrf_token %}<input type="hidden" name="type" value="origin">
+    <label>{% translate "Arabic name" %}<input name="name_ar" required></label>
+    <label>{% translate "French name" %}<input name="name_fr" required></label>
+    <button class="btn">{% translate "Add origin" %}</button>
+  </form>
+</div>
+<div class="section">
+  <h2>{% translate "Purities" %}</h2>
+  <div class="table-wrap"><table>
+    <tr><th>{% translate "Name" %}</th><th>{% translate "Fineness (‰)" %}</th><th>{% translate "Status" %}</th><th></th></tr>
+    {% for p in purities %}
+    <tr><td><span class="num">{{ p.label }}</span></td><td><span class="num">{{ p.fineness|plain }}</span></td><td>{% if p.disabled %}{% translate "Disabled" %}{% else %}{% translate "Active" %}{% endif %}</td>
+      <td><form method="post" action="{% url 'catalog_toggle' 'purity' p.pk %}">{% csrf_token %}<button class="link">{% if p.disabled %}{% translate "Enable" %}{% else %}{% translate "Disable" %}{% endif %}</button></form></td></tr>
+    {% endfor %}
+  </table></div>
+  <form method="post" class="filters">{% csrf_token %}<input type="hidden" name="type" value="purity">
+    <label>{% translate "Name" %}<input name="label" required class="ltr"></label>
+    <label>{% translate "Fineness (‰)" %}<input name="fineness" required inputmode="decimal" class="ltr"></label>
+    <button class="btn">{% translate "Add purity" %}</button>
+  </form>
+</div>
+{% endblock %}

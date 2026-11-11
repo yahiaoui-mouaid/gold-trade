@@ -1,0 +1,29 @@
+{% extends "auth_base.html" %}{% load i18n %}
+{% block wide %} wide{% endblock %}
+{% block content %}
+<h1>{% translate "Save these now. They will not be shown again." %}</h1>
+{% if display.token %}
+<section class="codes">
+  <h2>{% translate "Password reset token" %}</h2>
+  <p class="muted">{% translate "Resets your password if you forget it. After each reset you get a new token." %}</p>
+  <p class="code code-token">{{ display.token }}</p>
+</section>
+{% endif %}
+{% if display.codes %}
+<section class="codes">
+  <h2>{% translate "10 backup codes" %}</h2>
+  <p class="muted">{% translate "If you lose your phone, each code logs you in once. You then connect your phone again and get 10 new codes." %}</p>
+  <ol class="code-grid">{% for code in display.codes %}<li class="code">{{ code }}</li>{% endfor %}</ol>
+</section>
+{% endif %}
+<pre id="recovery-text" hidden>{{ text_file }}</pre>
+<p class="actions">
+  <button type="button" class="btn quiet" data-action="copy" data-done="{% translate 'Copied' %}">{% translate "Copy" %}</button>
+  <button type="button" class="btn quiet" data-action="download">{% translate "Download as .txt" %}</button>
+</p>
+<p class="warn">{% translate "Do not keep the .txt file on this computer: other users of this PC could read it. Save it on a USB stick or print it and keep it outside the shop." %}</p>
+<form method="post" class="stack">{% csrf_token %}
+  <label><input type="checkbox" name="saved" value="1" required>{% translate "I have saved them somewhere safe" %}</label>
+  <button class="btn">{% translate "Continue" %}</button>
+</form>
+{% endblock %}

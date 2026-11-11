@@ -1,0 +1,11 @@
+{% load i18n gv %}
+<h2>{% translate "Result of this operation" %}</h2>
+{% if hint %}
+<p class="hint">{{ hint }}</p>
+{% else %}
+{% for g in gold %}
+<div class="verdict-line"><small>{% if g.value > 0 %}{% translate "They owe you" %}{% else %}{% translate "You owe them" %}{% endif %}: {{ g.origin }}</small><strong class="is-gold"><span class="num">{{ g.value|absgrams }} g</span></strong></div>
+{% endfor %}
+{% if kind == 'sale' %}<div class="verdict-line"><small>{% translate "Total manufacture price" %}</small><strong><span class="num">{{ facon_total|dinars }} DA</span></strong></div>{% endif %}
+<div class="verdict-line"><small>{% if money_difference > 0 %}{% translate "They owe you" %}{% elif money_difference < 0 %}{% translate "You owe them" %}{% else %}{% translate "No money difference" %}{% endif %}</small><strong><span class="num">{{ money_difference|absdinars }} DA</span></strong></div>
+{% endif %}

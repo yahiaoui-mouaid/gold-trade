@@ -1,0 +1,52 @@
+{% extends "base.html" %}{% load i18n gv %}
+{% block content %}
+<article class="receipt">
+  <header class="receipt-head">
+    <div><h1>{{ t.kind|label }}</h1>
+      {% if t.party %}<p>{{ t.party.name }} <span class="num muted">{{ t.party.phone|default:"" }}</span></p>{% endif %}</div>
+    <div>
+      <p><span class="num">{{ t.number }}</span></p>
+      <p>{% translate "Date" %}: <span class="num">{{ t.operation_at|dt }}</span></p>
+      {% if date_differs %}<p class="muted">{% translate "Actually entered on" %}: <span class="num">{{ t.recorded_at|dt }}</span></p>{% endif %}
+      <p>{% translate "By" %}: {{ t.author_name }}</p>
+    </div>
+  </header>
+  {% if t.reversal_of %}<p class="warn">{% translate "Voids operation" %} <span class="num">{{ t.reversal_of.number }}</span>. {{ t.note }}</p>{% endif %}
+  {% if lines_in %}
+  <h2>{% translate "Received" %}</h2>
+  <table><tr><th>{% translate "Gold" %}</th><th>{% translate "Weight (g)" %}</th><th>‰</th><th>{% translate "Pure gold (g)" %}</th></tr>
+    {% for l in lines_in %}<tr><td>{{ l.stock_item }}</td><td><span class="num">{{ l.gross_grams|grams }}</span></td><td><span class="num">{{ l.fineness|plain }}</span></td><td><span class="num gold">{{ l.fine_grams|grams }}</span></td></tr>{% endfor %}
+  </table>
+  {% endif %}
+  {% if lines_out %}
+  <h2>{% translate "Given" %}</h2>
+  <table><tr><th>{% translate "Gold" %}</th><th>{% translate "Weight (g)" %}</th><th>{% translate "Pieces" %}</th><th>‰</th><th>{% translate "Pure gold (g)" %}</th><th>{% translate "Manufacture per gram (DA)" %}</th></tr>
+    {% for l in lines_out %}<tr><td>{{ l.stock_item }}</td><td><span class="num">{{ l.gross_grams|grams }}</span></td><td><span class="num">{{ l.pieces }}</span></td><td><span class="num">{{ l.fineness|plain }}</span></td><td><span class="num gold">{{ l.fine_grams|grams }}</span></td><td><span class="num">{{ l.facon_rate|dinars }}</span></td></tr>{% endfor %}
+  </table>
+  {% endif %}
+  <table>
+    {% if t.facon_total %}<tr><th>{% translate "Total manufacture price" %}</th><td class="end"><span class="num">{{ t.facon_total|dinars }} DA</span></td></tr>{% endif %}
+    {% if t.money_received %}<tr><th>{% translate "Cash received" %}</th><td class="end"><span class="num">{{ t.money_received|dinars }} DA</span></td></tr>{% endif %}
+    {% if t.money_given %}<tr><th>{% translate "Cash given" %}</th><td class="end"><span class="num">{{ t.money_given|dinars }} DA</span></td></tr>{% endif %}
+    {% for e in entries %}
+    <tr><th>{% if e.asset == 'gold' %}{% if e.fine_grams > 0 %}{% translate "Owes the shop" %}{% else %}{% translate "The shop owes" %}{% endif %}: {{ e.origin.name }}{% else %}{% if e.amount_da > 0 %}{% translate "Owes the shop" %}{% else %}{% translate "The shop owes" %}{% endif %}{% endif %}</th>
+      <td class="end">{% if e.asset == 'gold' %}<span class="num gold">{{ e.fine_grams|absgrams }} g</span>{% else %}<span class="num">{{ e.amount_da|absdinars }} DA</span>{% endif %}</td></tr>
+    {% endfor %}
+  </table>
+  {% if balances %}
+  <h2>{% translate "Balance now" %}</h2>
+  <table>
+    <tr><th>{% if balances.money < 0 %}{% translate "The shop owes" %}{% else %}{% translate "Owes the shop" %}{% endif %}</th><td class="end"><span class="num">{{ balances.money|absdinars }} DA</span></td></tr>
+    {% for origin, grams in balances.gold %}<tr><th>{% if grams < 0 %}{% translate "The shop owes" %}{% else %}{% translate "Owes the shop" %}{% endif %}: {{ origin.name }}</th><td class="end"><span class="num gold">{{ grams|absgrams }} g</span></td></tr>{% endfor %}
+  </table>
+  {% endif %}
+  <p class="muted">{% translate "Verification code" %}: <span class="num">{{ t|verification }}</span></p>
+  <div class="signatures"><span>{% translate "Client signature" %}</span><span>{% translate "Shop signature" %}</span></div>
+</article>
+<p class="actions no-print"><br>
+  <button type="button" class="btn" data-action="print" data-size="a4">{% translate "Print on A4" %}</button>
+  <button type="button" class="btn quiet" data-action="print" data-size="roll">{% translate "Print on 80 mm roll" %}</button>
+  {% if is_owner and not t.reversal_of and t.kind != 'reversal' and not t.reversed_by %}<a class="btn quiet" href="{% url 'void' t.pk %}">{% translate "Void this operation" %}</a>{% endif %}
+  {% if not is_owner %}<span class="muted">{% translate "Print now: this receipt can only be opened once." %}</span>{% endif %}
+</p>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% load i18n static %}<!doctype html>
+{% get_current_language as LANG %}{% get_current_language_bidi as RTL %}
+<html lang="{{ LANG }}" dir="{% if RTL %}rtl{% else %}ltr{% endif %}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="htmx-config" content='{"includeIndicatorStyles":false,"allowEval":false}'>
+<title>{% block title %}Gold Volt{% endblock %}</title>
+<link rel="stylesheet" href="{% static 'gv/app.css' %}">
+<script src="{% static 'vendor/htmx.min.js' %}" defer></script>
+<script src="{% static 'gv/app.js' %}" defer></script>
+</head>
+{% with here=request.resolver_match.url_name %}
+<body hx-headers='{"X-CSRFToken":"{{ csrf_token }}"}'{% if user.is_authenticated %} data-idle-seconds="{% if is_owner %}600{% else %}300{% endif %}"{% endif %}>
+{% block page %}
+<div class="shell">
+  <nav class="rail" aria-label="{% translate 'Main menu' %}">
+    <div class="wordmark">Gold Volt</div>
+    <div class="rail-group">
+      <a href="{% url 'new_sale' %}"{% if here == 'new_sale' %} aria-current="page"{% endif %}>{% translate "New sale" %}</a>
+      <a href="{% url 'new_purchase' %}"{% if here == 'new_purchase' %} aria-current="page"{% endif %}>{% translate "New purchase" %}</a>
+      <a href="{% url 'new_payment' %}"{% if here == 'new_payment' %} aria-current="page"{% endif %}>{% translate "Debt payment" %}</a>
+    </div>
+    {% if is_owner %}
+    <div class="rail-group">
+      <a href="{% url 'dashboard' %}"{% if here == 'dashboard' %} aria-current="page"{% endif %}>{% translate "Dashboard" %}</a>
+      <a href="{% url 'operations' %}"{% if here == 'operations' %} aria-current="page"{% endif %}>{% translate "Operations" %}</a>
+      <a href="{% url 'parties' %}"{% if here == 'parties' %} aria-current="page"{% endif %}>{% translate "Clients and suppliers" %}</a>
+      <a href="{% url 'debts' %}"{% if here == 'debts' %} aria-current="page"{% endif %}>{% translate "Debts" %}</a>
+      <a href="{% url 'stock' %}"{% if here == 'stock' %} aria-current="page"{% endif %}>{% translate "Stock" %}</a>
+      <a href="{% url 'movements' %}"{% if here == 'movements' %} aria-current="page"{% endif %}>{% translate "Stock movements" %}</a>
+    </div>
+    <div class="rail-group">
+      <a href="{% url 'catalog' %}"{% if here == 'catalog' %} aria-current="page"{% endif %}>{% translate "Categories and origins" %}</a>
+      <a href="{% url 'activity' %}"{% if here == 'activity' %} aria-current="page"{% endif %}>{% translate "Activity log" %}</a>
+      <a href="{% url 'users' %}"{% if here == 'users' %} aria-current="page"{% endif %}>{% translate "Users" %}</a>
+    </div>
+    {% endif %}
+    <div class="rail-foot">
+      <p>{{ user.display_name }}</p>
+      <form method="post" action="{% url 'set_language' %}" class="lang-switch">{% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <button name="language" value="ar">العربية</button><button name="language" value="fr">Français</button>
+      </form>
+      <p><a href="{% url 'change_password' %}">{% translate "Change password" %}</a></p>
+      <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="link">{% translate "Log out" %}</button></form>
+    </div>
+  </nav>
+  <main class="content">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% endblock %}
+</body>
+{% endwith %}
+</html>

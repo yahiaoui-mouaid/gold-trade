@@ -1,0 +1,13 @@
+{% extends "auth_base.html" %}{% load i18n %}
+{% block content %}
+<h1>{% translate "Connect your authenticator app" %}</h1>
+{% if must_reenroll %}<p class="warn">{% translate "You logged in with a backup code. Connect your phone again to continue." %}</p>{% endif %}
+{% include "_error.html" %}
+<p>{% translate "Scan this image with your authenticator app, then enter the 6-digit code it shows." %}</p>
+<div class="qr">{{ qr|safe }}</div>
+<p class="muted">{% translate "Or type this key:" %} <span class="num">{{ manual_key }}</span></p>
+<form method="post" class="stack">{% csrf_token %}
+  <label>{% translate "6-digit code from your phone" %}<input name="code" required autofocus autocomplete="off" inputmode="numeric" class="ltr"></label>
+  <button class="btn">{% translate "Connect" %}</button>
+</form>
+{% endblock %}

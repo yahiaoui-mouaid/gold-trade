@@ -1,0 +1,9 @@
+{% load i18n %}<div class="row" data-row>
+  <label>{% translate "Category" %}<select name="out_category">{% for c in categories %}<option value="{{ c.pk }}"{% if row.category == c.pk|stringformat:"s" %} selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></label>
+  <label>{% translate "Origin" %}<select name="out_origin">{% for o in origins %}<option value="{{ o.pk }}"{% if row.origin == o.pk|stringformat:"s" %} selected{% endif %}>{{ o.name }}</option>{% endfor %}</select></label>
+  <label>{% translate "Purity" %}<select name="out_purity">{% for p in purities %}<option value="{{ p.pk }}"{% if row.purity == p.pk|stringformat:"s" %} selected{% endif %}>{{ p.label }}</option>{% endfor %}</select></label>
+  <label>{% translate "Weight (g)" %}<input name="out_grams" inputmode="decimal" class="ltr" autocomplete="off" value="{{ row.grams|default:'' }}"></label>
+  <label>{% translate "Pieces" %}<input name="out_pieces" inputmode="numeric" class="ltr" autocomplete="off" value="{{ row.pieces|default:'' }}"></label>
+  <label>{% translate "Manufacture per gram (DA)" %}<input name="out_facon" inputmode="decimal" class="ltr" autocomplete="off" value="{{ row.facon|default:'' }}"></label>
+  <button type="button" class="row-remove" data-action="remove-row">{% translate "Remove" %}</button>
+</div>

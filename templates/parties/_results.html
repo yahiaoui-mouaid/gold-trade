@@ -1,0 +1,5 @@
+{% load i18n %}
+{% if message %}<p class="warn">{{ message }}</p>{% endif %}
+{% for r in results %}
+<label><input type="radio" name="party" value="{{ r.id }}"{% if r.checked %} checked{% endif %}>{{ r.name }}&nbsp;<span class="num muted">{{ r.phone }}</span></label>
+{% endfor %}

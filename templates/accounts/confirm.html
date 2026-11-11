@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% load i18n %}
+{% block content %}
+<h1>{% translate "Confirm it is you" %}</h1>
+{% include "_error.html" %}
+<form method="post" class="stack narrow">{% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}">
+  <label>{% translate "Password" %}<input type="password" name="password" required autofocus autocomplete="off"></label>
+  <label>{% translate "6-digit code from your phone" %}<input name="code" required autocomplete="off" class="ltr"></label>
+  <button class="btn">{% translate "Confirm" %}</button>
+</form>
+{% endblock %}

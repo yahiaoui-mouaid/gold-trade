@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% load i18n %}
+{% block content %}
+<h1>{% translate "Reset password" %}: {{ target.display_name }}</h1>
+{% include "_error.html" %}
+<form method="post" class="stack narrow">{% csrf_token %}
+  <label>{% translate "New password (at least 8 characters)" %}<input type="password" name="password" required minlength="8" autocomplete="new-password"></label>
+  <button class="btn">{% translate "Reset password" %}</button>
+</form>
+{% endblock %}

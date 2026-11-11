@@ -1,0 +1,6 @@
+{% load i18n %}{% if page.paginator.num_pages > 1 %}
+<nav class="pager no-print">
+  {% if page.has_previous %}<a href="?{% if request.GET.urlencode %}{{ request.GET.urlencode }}&amp;{% endif %}page={{ page.previous_page_number }}">{% translate "Previous page" %}</a>{% endif %}
+  <span class="num">{{ page.number }} / {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}<a href="?{% if request.GET.urlencode %}{{ request.GET.urlencode }}&amp;{% endif %}page={{ page.next_page_number }}">{% translate "Next page" %}</a>{% endif %}
+</nav>{% endif %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}{% load i18n %}
+{% block content %}
+<h1>{% if kind == 'sale' %}{% translate "New sale" %}{% else %}{% translate "New purchase" %}{% endif %}</h1>
+{% include "_error.html" %}
+{% if not origins %}<p class="warn">{% translate "The admin must add gold origins and categories first." %}</p>{% endif %}
+<form method="post" hx-post="{% url 'preview' %}" hx-trigger="change delay:100ms, keyup delay:400ms" hx-target="#verdict" hx-swap="innerHTML">{% csrf_token %}
+  <input type="hidden" name="kind" value="{{ kind }}">
+  <input type="hidden" name="form_token" value="{{ form_token }}">
+  <input type="hidden" name="operation_at_default" value="{{ operation_at_default }}">
+  <div class="fields">
+    <div>{% include "parties/_picker.html" %}</div>
+    <div class="stack">
+      <label>{% translate "Date and time" %}<input type="datetime-local" name="operation_at" value="{{ operation_at }}" class="ltr"></label>
+      <label>{% translate "Note" %}<input name="note" value="{{ post.note|default:'' }}" autocomplete="off"></label>
+    </div>
+  </div>
+
+  <div class="scale"{% if kind == 'purchase' %} data-single{% endif %}>
+    <section class="pan">
+      <h2>{% if kind == 'sale' %}{% translate "They give you" %}{% else %}{% translate "You receive" %}{% endif %}<button type="button" class="btn quiet" data-action="add-row" data-template="in-template" data-target="in-rows">{% translate "Add gold" %}</button></h2>
+      <div id="in-rows">{% for row in in_rows %}{% include "ledger/_in_row.html" %}{% endfor %}</div>
+      <label class="money-pair">{% translate "Cash received (DA)" %}<input name="money_received" inputmode="decimal" class="ltr" autocomplete="off" value="{{ post.money_received|default:'' }}"></label>
+    </section>
+    <section class="pan">
+      {% if kind == 'sale' %}
+      <h2>{% translate "You give them" %}<button type="button" class="btn quiet" data-action="add-row" data-template="out-template" data-target="out-rows">{% translate "Add item" %}</button></h2>
+      <div id="out-rows">{% for row in out_rows %}{% include "ledger/_out_row.html" %}{% endfor %}</div>
+      {% else %}
+      <h2>{% translate "You give" %}</h2>
+      {% endif %}
+      <label class="money-pair">{% translate "Cash given (DA)" %}<input name="money_given" inputmode="decimal" class="ltr" autocomplete="off" value="{{ post.money_given|default:'' }}"></label>
+    </section>
+  </div>
+
+  <div class="verdict" id="verdict" aria-live="polite"><h2>{% translate "Result of this operation" %}</h2><p class="hint">{% translate "Enter the weights to see the result." %}</p></div>
+  <p><br><button class="btn">{% translate "Post operation" %}</button></p>
+</form>
+<template id="in-template">{% include "ledger/_in_row.html" with row=None %}</template>
+<template id="out-template">{% include "ledger/_out_row.html" with row=None %}</template>
+{% endblock %}

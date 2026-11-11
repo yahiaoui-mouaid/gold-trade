@@ -1,0 +1,26 @@
+{% extends "base.html" %}{% load i18n gv %}
+{% block content %}
+<h1>{% translate "Users" %}</h1>
+<div class="table-wrap section"><table>
+  <tr><th>{% translate "Username" %}</th><th>{% translate "Name" %}</th><th>{% translate "Role" %}</th><th>{% translate "Status" %}</th><th></th></tr>
+  {% for u in users %}
+  <tr>
+    <td><span class="num">{{ u.username }}</span></td><td>{{ u.display_name }}</td><td>{{ u.role|label }}</td>
+    <td>{% if u.is_active %}{% translate "Active" %}{% else %}{% translate "Disabled" %}{% endif %}</td>
+    <td>{% if u.role == 'salesman' %}
+      <div class="actions">
+        <a href="{% url 'user_reset' u.pk %}">{% translate "Reset password" %}</a>
+        <form method="post" action="{% url 'user_toggle' u.pk %}">{% csrf_token %}<button class="link">{% if u.is_active %}{% translate "Disable" %}{% else %}{% translate "Enable" %}{% endif %}</button></form>
+      </div>{% endif %}</td>
+  </tr>
+  {% endfor %}
+</table></div>
+<h2>{% translate "Add a non-admin user" %}</h2>
+{% include "_error.html" %}
+<form method="post" class="stack narrow">{% csrf_token %}
+  <label>{% translate "Username" %}<input name="username" required autocomplete="off" class="ltr"></label>
+  <label>{% translate "Name" %}<input name="display_name" required autocomplete="off"></label>
+  <label>{% translate "Password (at least 8 characters)" %}<input type="password" name="password" required minlength="8" autocomplete="new-password"></label>
+  <button class="btn">{% translate "Add user" %}</button>
+</form>
+{% endblock %}

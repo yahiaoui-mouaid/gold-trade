@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% load i18n gv %}
+{% block content %}
+<h1>{% translate "Stock movements" %}</h1>
+<form class="filters">
+  <label>{% translate "From" %}<input type="date" name="from" value="{{ f.from }}"></label>
+  <label>{% translate "To" %}<input type="date" name="to" value="{{ f.to }}"></label>
+  <label>{% translate "By" %}<select name="user"><option value="">{% translate "All" %}</option>{% for u in users %}<option value="{{ u.pk }}"{% if f.user == u.pk|stringformat:"s" %} selected{% endif %}>{{ u.display_name }}</option>{% endfor %}</select></label>
+  <label>{% translate "Client or supplier" %}<select name="party"><option value="">{% translate "All" %}</option>{% for p in parties %}<option value="{{ p.pk }}"{% if f.party == p.pk|stringformat:"s" %} selected{% endif %}>{{ p.name }}</option>{% endfor %}</select></label>
+  <label>{% translate "Type" %}<select name="party_kind"><option value="">{% translate "All" %}</option>{% for value, _l in party_kinds %}<option value="{{ value }}"{% if f.party_kind == value %} selected{% endif %}>{{ value|label }}</option>{% endfor %}</select></label>
+  <label>{% translate "Origin" %}<select name="origin"><option value="">{% translate "All" %}</option>{% for o in origins %}<option value="{{ o.pk }}"{% if f.origin == o.pk|stringformat:"s" %} selected{% endif %}>{{ o.name }}</option>{% endfor %}</select></label>
+  <label>{% translate "Category" %}<select name="category"><option value="">{% translate "All" %}</option>{% for c in categories %}<option value="{{ c.pk }}"{% if f.category == c.pk|stringformat:"s" %} selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></label>
+  <button class="btn quiet">{% translate "Filter" %}</button>
+</form>
+<div class="table-wrap"><table>
+  <tr><th>{% translate "Date" %}</th><th>{% translate "Number" %}</th><th>{% translate "Gold" %}</th><th class="end">{% translate "Weight (g)" %}</th><th class="end">{% translate "Pieces" %}</th><th>{% translate "Client or supplier" %}</th><th>{% translate "By" %}</th></tr>
+  {% for m in page %}
+  <tr><td><span class="num">{{ m.transaction.operation_at|dt }}</span></td><td><a href="{% url 'receipt' m.transaction_id %}"><span class="num">{{ m.transaction.number }}</span></a></td><td>{{ m.stock_item }}</td><td class="end"><span class="num gold">{{ m.grams|grams }}</span></td><td class="end"><span class="num">{{ m.pieces }}</span></td><td>{{ m.transaction.party.name|default:"" }}</td><td>{{ m.transaction.author_name }}</td></tr>
+  {% empty %}<tr><td colspan="7" class="empty">{% translate "No movements match these filters." %}</td></tr>
+  {% endfor %}
+</table></div>
+{% include "_pager.html" %}
+{% endblock %}

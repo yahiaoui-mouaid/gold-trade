@@ -1,0 +1,20 @@
+{% load i18n %}
+<div class="party-box">
+  <label>{% translate "Search by name or phone" %}
+    <input type="search" name="q" data-no-submit autocomplete="off"
+           hx-get="{% url 'party_search' %}?for={{ kind }}" hx-trigger="keyup changed delay:300ms" hx-target="#party-results" hx-swap="innerHTML">
+  </label>
+  <div id="party-results" class="results">{% if selected %}{% include "parties/_results.html" with results=selected_list %}{% endif %}</div>
+  <details>
+    <summary>{% translate "New client or supplier" %}</summary>
+    <div class="fields">
+      <label>{% translate "Name" %}<input name="quick_name" data-no-submit autocomplete="off"></label>
+      <label>{% translate "Phone" %}<input name="quick_phone" data-no-submit autocomplete="off" inputmode="tel" class="ltr"></label>
+      {% if kind == 'payment' %}
+      <label>{% translate "Type" %}<select name="quick_kind"><option value="client">{% translate "Client" %}</option><option value="supplier">{% translate "Supplier" %}</option></select></label>
+      {% endif %}
+      <input type="hidden" name="purpose" value="{{ kind }}">
+    </div>
+    <p><br><button type="button" class="btn quiet" hx-post="{% url 'party_quick_add' %}" hx-target="#party-results" hx-swap="innerHTML" hx-trigger="click">{% translate "Add and select" %}</button></p>
+  </details>
+</div>

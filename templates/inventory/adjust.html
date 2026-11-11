@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% load i18n gv %}
+{% block content %}
+<h1>{% translate "Adjust stock" %}</h1>
+<p class="muted">{% translate "Use a positive number to add stock, including opening stock, and a negative number to remove it." %}</p>
+{% include "_error.html" %}
+<form method="post" class="stack narrow">{% csrf_token %}
+  <label>{% translate "Type" %}<select name="kind">{% for value, _l in kinds %}<option value="{{ value }}">{{ value|label }}</option>{% endfor %}</select></label>
+  <label>{% translate "Category (ready gold only)" %}<select name="category"><option value=""></option>{% for c in categories %}<option value="{{ c.pk }}">{{ c.name }}</option>{% endfor %}</select></label>
+  <label>{% translate "Origin" %}<select name="origin">{% for o in origins %}<option value="{{ o.pk }}">{{ o.name }}</option>{% endfor %}</select></label>
+  <label>{% translate "Purity" %}<select name="purity">{% for p in purities %}<option value="{{ p.pk }}">{{ p.label }}</option>{% endfor %}</select></label>
+  <label>{% translate "Weight (g)" %}<input name="grams" inputmode="decimal" class="ltr" autocomplete="off" required></label>
+  <label>{% translate "Pieces" %}<input name="pieces" inputmode="numeric" class="ltr" autocomplete="off" value="0"></label>
+  <label>{% translate "Reason" %}<textarea name="reason" required rows="2"></textarea></label>
+  <button class="btn">{% translate "Save adjustment" %}</button>
+</form>
+{% endblock %}

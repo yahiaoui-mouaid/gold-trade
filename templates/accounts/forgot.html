@@ -1,0 +1,12 @@
+{% extends "auth_base.html" %}{% load i18n %}
+{% block content %}
+<h1>{% translate "Reset the admin password" %}</h1>
+{% include "_error.html" %}
+<form method="post" class="stack">{% csrf_token %}
+  <label>{% translate "Password reset token" %}<input name="token" required autofocus autocomplete="off" class="ltr"></label>
+  <label>{% translate "New password (at least 12 characters)" %}<input type="password" name="password" required minlength="12" autocomplete="new-password"></label>
+  <label>{% translate "Repeat the password" %}<input type="password" name="password2" required minlength="12" autocomplete="new-password"></label>
+  <button class="btn">{% translate "Reset password" %}</button>
+</form>
+<p class="muted"><br><a href="{% url 'login' %}">{% translate "Back to log in" %}</a></p>
+{% endblock %}
